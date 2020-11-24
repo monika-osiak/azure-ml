@@ -41,15 +41,17 @@ Jako wynik dostaje:
 ## Architektura projektu
 Użyte narzędzia Microsoft Azure:
 1. Azure App Service - hostowanie aplikacji,
-2. Azure Data Lake Storage lub Azure SQL Database - baza danych,
-3. Text Analytics API - sentiment analysis.
+2. Text Analytics API - sentiment analysis.
+
+Nie planujemy używać bazy danych ze względu na to, że analizy chcemy przeprowadzać na tweetach pobieranych w czasie
+rzeczywistym.
 
 ## Harmonogram projektu
-| Zajęcia | Data       | Kamień milowy                                                    | Uwagi                |
-|---------|------------|------------------------------------------------------------------|----------------------|
-| P2      | 26.11.2020 | Specyfikacja funkcjonalna projektu                               |                      |
-| P3      | 10.12.2020 | Skrypt, który pobiera X najnowszych tweetów z podanym hasztagiem | check-point z PO     |
-| P4      | 07.01.2021 | Wykonana analiza sentymentu dla tweetów podanych przez firmę     |                      |
-| P5      | 14.01.2021 | Aplikacja webowa, do której podłączony zostanie model            | obecność obowiązkowa |
-| P6      | 21.01.2021 | Aplikacja webowa umożliwia analizę dla dowolnych hasztagów       |                      |
-| P7      | 28.01.2021 | C'est fini mes amis !                                            | prezentacja projektu |
+| Zajęcia | Data       | Kamień milowy                                                                                     | Uwagi                |
+|---------|------------|---------------------------------------------------------------------------------------------------|----------------------|
+| P2      | 26.11.2020 | Specyfikacja funkcjonalna projektu                                                                |                      |
+| P3      | 10.12.2020 | Skrypt, który pobiera X najnowszych tweetów z podanym hasztagiem                                  | check-point z PO     |
+| P4      | 07.01.2021 | Wykonana analiza sentymentu dla tweetów podanych przez firmę                                      |                      |
+| P5      | 14.01.2021 | Aplikacja webowa, do której podłączony zostanie model                                             | obecność obowiązkowa |
+| P6      | 21.01.2021 | Aplikacja webowa umożliwia analizę dla dowolnych hasztagów z dowolnego przedziału czasowego       |                      |
+| P7      | 28.01.2021 | C'est fini mes amis !                                                                             | prezentacja projektu |
