@@ -25,8 +25,9 @@ Aplikacja będzie korzystać z API Twittera w celu pobrania tweetów w języku p
 Model zostanie wytrenowany za pomocą korpusów języka polskiego.
 
 ### Stos technologiczny
-1. Python 3.x - analiza sentymentu, back-end aplikacji webowej
-2. React - front-end aplikacji webowej (dodatkowo)
+1. Python 3.x:
+    1. Flask - aplikacja webowa,
+    2. biblioteki do analizy danych: pandas, seaborn, etc.
 
 ## Funkcjonalności
 1. Użytkownik podaje hasztag i okres czasu, z jakiego mają pochodzić dane. 
@@ -38,7 +39,10 @@ Jako wynik dostaje:
 2. Analiza hasztagów podanych przez firmę zostanie pokazana w formie sprawozdania w pliku PDF.
 
 ## Architektura projektu
-TBD
+Użyte narzędzia Microsoft Azure:
+1. Azure App Service - hostowanie aplikacji,
+2. Azure Data Lake Storage lub Azure SQL Database - baza danych,
+3. Text Analytics API - sentiment analysis.
 
 ## Harmonogram projektu
 | Zajęcia | Data       | Kamień milowy                                                    | Uwagi                |
