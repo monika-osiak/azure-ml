@@ -28,6 +28,7 @@ Model zostanie wytrenowany za pomocą korpusów języka polskiego.
 1. Python 3.x:
     1. Flask - aplikacja webowa,
     2. biblioteki do analizy danych: pandas, seaborn, etc.
+2. D3.js - wizualizacja danych
 
 ## Funkcjonalności
 1. Użytkownik podaje hasztag i okres czasu, z jakiego mają pochodzić dane. 
