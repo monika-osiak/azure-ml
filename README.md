@@ -22,7 +22,7 @@ zaprezentowane w formie sprawozdania
 
 ### Zbiór danych
 Aplikacja będzie korzystać z API Twittera w celu pobrania tweetów w języku polskim w zadanym okresie czasu.
-Model zostanie wytrenowany za pomocą korpusów języka polskiego.
+Używamy modelu dostępnego z Text Analytics API z Microsoft Azure.
 
 ### Stos technologiczny
 1. Python 3.x:
