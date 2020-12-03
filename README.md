@@ -22,7 +22,7 @@ zaprezentowane w formie sprawozdania
 
 ### Zbiór danych
 Aplikacja będzie korzystać z API Twittera w celu pobrania tweetów w języku polskim w zadanym okresie czasu.
-Używamy modelu dostępnego z Text Analytics API z Microsoft Azure.
+Do analizy emocji związanych z wpisami użyjemy modelu dostępnego w Text Analytics API z Microsoft Azure.
 
 ### Stos technologiczny
 1. Python 3.x:
@@ -31,7 +31,7 @@ Używamy modelu dostępnego z Text Analytics API z Microsoft Azure.
 2. D3.js - wizualizacja danych
 
 ## Funkcjonalności
-1. Użytkownik podaje hasztag i okres czasu, z jakiego mają pochodzić dane. 
+1. Użytkownik podaje hasztag i okres, z jakiego mają pochodzić dane. 
 Jako wynik dostaje:
     1. wykres kołowy, który pokazuje ilość tweetów pozytywnych, neutralnych i negatywnych - pokazujący ogólny sentyment,
     2. graficzną prezentację sentymentu w czasie w postaci wykresu liniowego,
@@ -42,10 +42,11 @@ Jako wynik dostaje:
 ## Architektura projektu
 Użyte narzędzia Microsoft Azure:
 1. Azure App Service - hostowanie aplikacji,
-2. Text Analytics API - sentiment analysis.
+2. Text Analytics API - analiza nacechowania emocjonalnego tweetów,
+3. Azure Table Storage - nierelacyjna baza danych, w której przechowywane będą przez pewien czas już przeanalizowane wpisy z przypisanym sentymentem,
+4. Azure Functions - cykliczne wywoływanie skryptu czyszczącego bazę danych
 
-Nie planujemy używać bazy danych ze względu na to, że analizy chcemy przeprowadzać na tweetach pobieranych w czasie
-rzeczywistym.
+![](https://github.com/monika-osiak/azure-ml/blob/readme-update/resources/components.png)
 
 ## Harmonogram projektu
 | Zajęcia | Data       | Kamień milowy                                                                                     | Uwagi                |
