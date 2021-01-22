@@ -1,24 +1,100 @@
+from flask import Flask, render_template, make_response, request, jsonify
+from datetime import datetime
 import tweepy
-import csv
 import config
-from tqdm import tqdm
 
-auth = tweepy.OAuthHandler(config.consumer_key, config.consumer_secret)
-auth.set_access_token(config.access_token, config.access_token_secret)
-api = tweepy.API(auth, wait_on_rate_limit=True)
 
-f = open("hashtags.txt", "r", encoding="utf-8")
-for line in tqdm(f):
-    hashtag = line[:-1] if line[-1] == '\n' else line
-    print('> Parsing ' + hashtag + '...')
+app = Flask(__name__)
+storage = None
+twitter_api, analytics_api = config.connect_with_services()
 
-    csvFile = open('tweets/' + hashtag[1:] + '.csv', 'w', encoding="utf-8")
-    csvWriter = csv.writer(csvFile)
 
-    for tweet in tweepy.Cursor(
-            api.search,
-            q=hashtag + ' -filter:retweets',
-            lang="pl",
-            since="2020-01-01"
-    ).items(100):
-        csvWriter.writerow([tweet.created_at, tweet.text])
+@app.route('/get-sentiment', methods=['GET'])
+def registration_view_post():
+    data = {}
+    data['hashtag'] = '#' + request.form.get("hashtag")
+    data['from'] = request.form.get("from")
+    
+    errors = {}
+    for k, v in data.items():
+        if not v:
+            errors[k] = "field cannot be empty"
+    
+    if errors:
+        return jsonify(errors=errors), 400
+
+    total_count = 0
+    last_id = 0
+    batch_count = 1
+    tweets_analysed = []
+    # Azure pozwala na wysyłanie maksymalnie 10 dokumentów naraz
+    batch_size = 10
+    positive = 0
+    negative = 0
+    neutral = 0
+    while batch_count > 0 and total_count < 300:
+        if total_count == 0:
+            tweets = tweepy.Cursor(
+                twitter_api.search,
+                tweet_mode='extended',
+                q=data['hashtag'] + ' -filter:retweets',
+                result_type='recent',
+                lang="pl",
+                since=data['from']).items(batch_size)
+        else:
+            tweets = tweepy.Cursor(
+                twitter_api.search,
+                tweet_mode='extended',
+                q=data['hashtag'] + ' -filter:retweets',
+                result_type='recent',
+                lang="pl",
+                max_id=last_id-1,
+                since=data['from']).items(batch_size)
+
+        batch_count = 0
+        for tweet in tweets:
+            batch_count += 1
+            created_at = str(tweet.created_at).split(' ')[0]
+            last_id = tweet.id
+            tweets_analysed.append({"id": tweet.id_str, "content": tweet.full_text, "created_at": created_at})
+        
+        results = None
+        tweets_to_analyse = [tweet["content"] for tweet in tweets_analysed[total_count:total_count+batch_count]]
+        if tweets_to_analyse:
+            results = analytics_api.analyze_sentiment(tweets_to_analyse)
+
+        i = 0
+        for tweet in tweets_analysed[total_count:total_count+batch_count]:
+            sentiment = results[i]['sentiment']
+            if sentiment == 'positive':
+                positive += 1
+            if sentiment == 'negative':
+                negative += 1 
+            if sentiment == 'neutral':
+                neutral += 1 
+
+            tweet['sentiment'] = sentiment
+
+            i+=1
+
+        total_count += batch_count
+
+        avg_sentiment = None
+        if max([positive, negative, neutral]) == positive:
+            avg_sentiment = 'positive'
+        if max([positive, negative, neutral]) == negative:
+            avg_sentiment = 'negative'
+        if max([positive, negative, neutral]) == neutral:
+            avg_sentiment = 'neutral'
+
+        positive_percent = round(positive / total_count * 100, 2)
+        negative_percent = round(negative / total_count * 100, 2)
+        neutral_percent = round(neutral / total_count * 100, 2)
+
+
+    return jsonify(analysed=total_count, average_sentiment=avg_sentiment, positive_percent=positive_percent,
+        negative_percent=negative_percent, neutral_percent=neutral_percent, sample_tweets=tweets_analysed[:3]), 200
+
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000)
