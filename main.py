@@ -3,23 +3,23 @@ from datetime import datetime
 import tweepy
 import config
 
-
 app = Flask(__name__)
 storage = None
 twitter_api, analytics_api = config.connect_with_services()
 
 
-@app.route('/get-sentiment', methods=['GET'])
+@app.route('/get-sentiment', methods=['GET', 'POST'])
 def registration_view_post():
+    print(request.form)
     data = {}
     data['hashtag'] = '#' + request.form.get("hashtag")
     data['from'] = request.form.get("from")
-    
+
     errors = {}
     for k, v in data.items():
         if not v:
             errors[k] = "field cannot be empty"
-    
+
     if errors:
         return jsonify(errors=errors), 400
 
@@ -48,7 +48,7 @@ def registration_view_post():
                 q=data['hashtag'] + ' -filter:retweets',
                 result_type='recent',
                 lang="pl",
-                max_id=last_id-1,
+                max_id=last_id - 1,
                 since=data['from']).items(batch_size)
 
         batch_count = 0
@@ -57,25 +57,25 @@ def registration_view_post():
             created_at = str(tweet.created_at).split(' ')[0]
             last_id = tweet.id
             tweets_analysed.append({"id": tweet.id_str, "content": tweet.full_text, "created_at": created_at})
-        
+
         results = None
-        tweets_to_analyse = [tweet["content"] for tweet in tweets_analysed[total_count:total_count+batch_count]]
+        tweets_to_analyse = [tweet["content"] for tweet in tweets_analysed[total_count:total_count + batch_count]]
         if tweets_to_analyse:
             results = analytics_api.analyze_sentiment(tweets_to_analyse)
 
         i = 0
-        for tweet in tweets_analysed[total_count:total_count+batch_count]:
+        for tweet in tweets_analysed[total_count:total_count + batch_count]:
             sentiment = results[i]['sentiment']
             if sentiment == 'positive':
                 positive += 1
             if sentiment == 'negative':
-                negative += 1 
+                negative += 1
             if sentiment == 'neutral':
-                neutral += 1 
+                neutral += 1
 
             tweet['sentiment'] = sentiment
 
-            i+=1
+            i += 1
 
         total_count += batch_count
 
@@ -91,10 +91,16 @@ def registration_view_post():
         negative_percent = round(negative / total_count * 100, 2)
         neutral_percent = round(neutral / total_count * 100, 2)
 
+    # return jsonify(analysed=total_count, average_sentiment=avg_sentiment, positive_percent=positive_percent,
+    #                negative_percent=negative_percent, neutral_percent=neutral_percent,
+    #                sample_tweets=tweets_analysed[:3]), 200
+    return render_template('welcome.html', tweets=tweets_analysed[:3])
 
-    return jsonify(analysed=total_count, average_sentiment=avg_sentiment, positive_percent=positive_percent,
-        negative_percent=negative_percent, neutral_percent=neutral_percent, sample_tweets=tweets_analysed[:3]), 200
+
+@app.route('/')
+def welcome():
+    return render_template('welcome.html')
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    app.run(port=5000)

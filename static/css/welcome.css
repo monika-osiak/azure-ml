@@ -1,0 +1,16 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+}
+.stream {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+.stream-box {
+    background-color: aquamarine;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 0.2rem;
+}
