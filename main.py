@@ -10,7 +10,6 @@ twitter_api, analytics_api = config.connect_with_services()
 
 @app.route('/get-sentiment', methods=['GET', 'POST'])
 def registration_view_post():
-    print(request.form)
     data = {}
     data['hashtag'] = '#' + request.form.get("hashtag")
     data['from'] = request.form.get("from")
@@ -94,7 +93,7 @@ def registration_view_post():
     # return jsonify(analysed=total_count, average_sentiment=avg_sentiment, positive_percent=positive_percent,
     #                negative_percent=negative_percent, neutral_percent=neutral_percent,
     #                sample_tweets=tweets_analysed[:3]), 200
-    return render_template('welcome.html', tweets=tweets_analysed[:3])
+    return render_template('welcome.html', tweets=tweets_analysed[:10])
 
 
 @app.route('/')

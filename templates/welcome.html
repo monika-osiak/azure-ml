@@ -5,36 +5,33 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <title>Azure</title>
+    <title>Analiza sentymentu tweetów</title>
 </head>
 <body>
 <div class="stream">
     <div class="stream-box">
-        <span>
-            Analiza sentymentu tweetów
-            <form action="{{ url_for('registration_view_post') }}" method="post">
-                <label for="hashtag" id="hashtag">tag do analizy #</label>
-                <input type="text" name="hashtag" id="hashtag">
-                <label for="from">od daty</label>
-                <input type="text" name="from" id="from">
-                <input type="submit">
-            </form>
-        </span>
+        <h1>Analiza sentymentu tweetów</h1>
     </div>
     <div class="stream-box">
-    siema!
+        <form action="{{ url_for('registration_view_post') }}" method="post">
+            <label for="hashtag" id="hashtag">tag do analizy #</label>
+            <input type="text" name="hashtag" id="hashtag">
+            <label for="from">od daty</label>
+            <input type="text" name="from" id="from">
+            <input type="submit">
+        </form>
     </div>
     {% for tweet in tweets %}
         <div class="stream-box">
-            <span>
-                opublikowano: {{ tweet.created_at }}
-            </span>
-            <span>
+            <div class="stream-box-date">
+                Opublikowano: {{ tweet.created_at }}
+            </div>
+            <div class="stream-box-content">
                 {{ tweet.content }}
-            </span>
-            <span>
-                ocena: {{ tweet.sentiment }}
-            </span>
+            </div>
+            <div class="stream-box-sentiment">
+                Ocena: {{ tweet.sentiment }}
+            </div>
         </div>
     {% endfor %}
 
