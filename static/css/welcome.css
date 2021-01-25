@@ -36,3 +36,9 @@ input {
     font-size: 0.95rem;
     font-weight: bold;
 }
+
+.chart-wrapper {
+    padding: 3%;
+    position: relative; 
+    height:40vh; 
+}
