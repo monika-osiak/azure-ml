@@ -90,10 +90,10 @@ def registration_view_post():
         negative_percent = round(negative / total_count * 100, 2)
         neutral_percent = round(neutral / total_count * 100, 2)
 
-    # return jsonify(analysed=total_count, average_sentiment=avg_sentiment, positive_percent=positive_percent,
-    #                negative_percent=negative_percent, neutral_percent=neutral_percent,
+    # return jsonify(analysed=total_count, average_sentiment=avg_sentiment, 
     #                sample_tweets=tweets_analysed[:3]), 200
-    return render_template('welcome.html', tweets=tweets_analysed[:10])
+    return render_template('welcome.html', tweets=tweets_analysed[:10], positive_percent=positive_percent,
+            negative_percent=negative_percent, neutral_percent=neutral_percent)
 
 
 @app.route('/')
@@ -102,4 +102,4 @@ def welcome():
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(host="0.0.0.0", port=5000)
