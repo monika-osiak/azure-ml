@@ -25,6 +25,13 @@ input[type='submit'] {
 h1 {
     text-align: center;
 }
+h3 {
+    text-align: center;
+}
+h5 {
+    text-align: center;
+    margin: 0;
+}
 .stream {
     width: 80%;
     display: flex;

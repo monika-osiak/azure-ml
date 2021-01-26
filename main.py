@@ -93,7 +93,7 @@ def registration_view_post():
     # return jsonify(analysed=total_count, average_sentiment=avg_sentiment, 
     #                sample_tweets=tweets_analysed[:3]), 200
     return render_template('welcome.html', tweets=tweets_analysed[:10], positive_percent=positive_percent,
-            negative_percent=negative_percent, neutral_percent=neutral_percent)
+            negative_percent=negative_percent, neutral_percent=neutral_percent, total_count=total_count)
 
 
 @app.route('/')

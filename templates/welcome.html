@@ -13,8 +13,8 @@
 <div class="stream">
     <a href="{{ url_for('welcome') }}">
         <div class="stream-box">
-        <h1>Analiza sentymentu tweetów</h1>
-    </div>
+            <h1>Analiza sentymentu tweetów</h1>
+        </div>
     </a>
     <div class="stream-box">
         <form action="{{ url_for('registration_view_post') }}" method="post">
@@ -26,46 +26,54 @@
         </form>
     </div>
     {% if tweets %}
-    <div class="stream-box">
-        <div class="chart-wrapper">
-            <canvas id="sentimentChart" height="100%" ></canvas>
-        </div>
-        <script>
-            console.log("{{ positive_percent }}")
-            console.log("{{ negative_percent }}")
-            console.log("{{ neutral_percent }}")
-            var ctx = document.getElementById('sentimentChart');
-            var sentimentChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: ["{{ negative_percent }}", "{{ positive_percent }}", "{{ neutral_percent }}"],
-                        backgroundColor: [
-                            'rgba(245, 0, 19, 0.8)',
-                            'rgba(0, 245, 19, 0.8)',
-                            'rgba(128, 128, 128, 0.8)'
+        <div class="stream-box">
+            <div class="chart-wrapper">
+                <canvas id="sentimentChart" height="100%"></canvas>
+            </div>
+            <script>
+                console.log("{{ positive_percent }}")
+                console.log("{{ negative_percent }}")
+                console.log("{{ neutral_percent }}")
+                var ctx = document.getElementById('sentimentChart');
+                var sentimentChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: ["{{ negative_percent }}", "{{ positive_percent }}", "{{ neutral_percent }}"],
+                            backgroundColor: [
+                                'rgba(245, 0, 19, 0.8)',
+                                'rgba(0, 245, 19, 0.8)',
+                                'rgba(128, 128, 128, 0.8)'
+                            ]
+                        }],
+                        labels: [
+                            'Negative',
+                            'Positive',
+                            'Neutral'
                         ]
-                    }],
-                    labels: [
-                        'Negative',
-                        'Positive',
-                        'Neutral'
-                    ]
-                },
-                options: {
-                    legend: {
-                        position: "bottom",
-                        align: "center",
-                        labels: {
-                            padding: 30,
-                            fontSize: 20,
-                            boxWidth: 50,
+                    },
+                    options: {
+                        legend: {
+                            position: "bottom",
+                            align: "center",
+                            labels: {
+                                padding: 30,
+                                fontSize: 20,
+                                boxWidth: 50,
+                            }
                         }
                     }
-                }
-            });
-        </script>
-    </div>
+                });
+            </script>
+        </div>
+        <div class="stream-box">
+            <h3>
+                Przeanalizowano {{ total_count }} tweetów.
+            </h3>
+            <h5>
+                Przykładowe tweety:
+            </h5>
+        </div>
     {% endif %}
     {% for tweet in tweets %}
         <div class="stream-box">
