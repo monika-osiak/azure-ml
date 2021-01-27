@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-    <script src="{{ url_for('static', filename='script/welcome.js') }}"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <title>Analiza sentymentu tweetów</title>
@@ -28,12 +27,9 @@
     {% if tweets %}
         <div class="stream-box">
             <div class="chart-wrapper">
-                <canvas id="sentimentChart" height="100%"></canvas>
+                <canvas id="sentimentChart"></canvas>
             </div>
             <script>
-                console.log("{{ positive_percent }}")
-                console.log("{{ negative_percent }}")
-                console.log("{{ neutral_percent }}")
                 var ctx = document.getElementById('sentimentChart');
                 var sentimentChart = new Chart(ctx, {
                     type: 'doughnut',

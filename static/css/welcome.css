@@ -60,8 +60,10 @@ h5 {
 .chart-wrapper {
     padding: 3%;
     position: relative; 
-    height:40vh; 
+    margin: auto;
+    width: 50%;
 }
+
 .mr-2 {
     margin-right: 2rem;
 }
