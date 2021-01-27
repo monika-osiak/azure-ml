@@ -67,3 +67,7 @@ h5 {
 .mr-2 {
     margin-right: 2rem;
 }
+
+.error-box {
+    background-color: #830707ab !important;
+}

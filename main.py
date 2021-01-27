@@ -86,6 +86,9 @@ def registration_view_post():
         if max([positive, negative, neutral]) == neutral:
             avg_sentiment = 'neutral'
 
+        if total_count == 0:
+            return render_template('welcome.html', message="Nie ma tweetów z takim hashtagiem!")
+
         positive_percent = round(positive / total_count * 100, 2)
         negative_percent = round(negative / total_count * 100, 2)
         neutral_percent = round(neutral / total_count * 100, 2)
