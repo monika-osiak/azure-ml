@@ -71,3 +71,24 @@ h5 {
 .error-box {
     background-color: #830707ab !important;
 }
+
+.form-ul li {
+    align-items: center;
+    list-style: none;
+    display: inline;
+    margin-right: 2rem;
+}
+
+.submit-button {
+    text-align: center;
+    align-items: center;
+    width: 160px;
+    height: 30px;
+    margin: 5px;
+    border-radius: 10px;
+}
+
+.submit-button:hover {
+    background-color: #8f0d1e9d;
+    color: white;
+}

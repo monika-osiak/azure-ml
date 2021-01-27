@@ -17,11 +17,19 @@
     </a>
     <div class="stream-box">
         <form action="{{ url_for('registration_view_post') }}" method="post">
-            <label for="hashtag" id="hashtag">tag do analizy #</label>
-            <input type="text" name="hashtag" id="hashtag" required class="mr-2">
-            <label for="from">od daty</label>
-            <input type="date" name="from" id="from" required class="mr-2">
-            <input type="submit">
+            <ul class="form-ul">
+                <li>
+                    <label for="hashtag" id="hashtag">tag do analizy #</label>
+                    <input type="text" name="hashtag" id="hashtag" required>
+                </li>
+                <li>
+                    <label for="from">od daty</label>
+                    <input type="date" name="from" id="from" required>
+                </li>
+                <li>
+                    <input type="submit" class="submit-button" value="Szukaj">
+                </li>
+            </ul>
         </form>
     </div>
     {% if message %}
