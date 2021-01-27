@@ -37,7 +37,13 @@
             {{ message }}
         </div>
     {% endif %}
+    
     {% if tweets %}
+        <div class="stream-box">
+            <h3>
+                Przeanalizowano {{ total_count }} tweetów.
+            </h3>
+        </div>
         <div class="stream-box">
             <div class="chart-wrapper">
                 <canvas id="sentimentChart"></canvas>
@@ -77,17 +83,17 @@
         </div>
         <div class="stream-box">
             <h3>
-                Przeanalizowano {{ total_count }} tweetów.
+                Oto przykładowe z nich:
             </h3>
-            <h5>
-                Przykładowe tweety:
-            </h5>
         </div>
     {% endif %}
     {% for tweet in tweets %}
         <div class="stream-box">
             <div class="stream-box-date">
                 Opublikowano: {{ tweet.created_at }}
+            </div>
+            <div class="stream-box-link">
+                <a href="{{ 'https://twitter.com/' + tweet.author + '/status/' + tweet.id }}">{{ 'https://twitter.com/' + tweet.author + '/status/' + tweet.id }}</a>
             </div>
             <div class="stream-box-content">
                 {{ tweet.content }}

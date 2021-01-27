@@ -52,6 +52,19 @@ h5 {
 .stream-box-date {
     font-size: 0.95rem;
 }
+
+.stream-box-link {
+    font-size: 1.2rem;
+}
+
+.stream-box-link a {
+    color:#25bef5;
+}
+
+.stream-box-link a:hover {
+    color:#81d8f7;
+}
+
 .stream-box-content {
     margin: 0.5rem 0;
 }

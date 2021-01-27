@@ -36,7 +36,7 @@ def sentiment_view():
         positive = 0
         negative = 0
         neutral = 0
-        while batch_count > 0 and total_count < 1000:
+        while batch_count > 0 and total_count < 300:
             if total_count == 0:
                 tweets = tweepy.Cursor(
                     twitter_api.search,
@@ -60,7 +60,7 @@ def sentiment_view():
                 batch_count += 1
                 created_at = str(tweet.created_at).split(' ')[0]
                 last_id = tweet.id
-                tweets_analysed.append({"id": tweet.id_str, "content": tweet.full_text, "created_at": created_at})
+                tweets_analysed.append({"id": tweet.id_str, "author": tweet.author.screen_name, "content": tweet.full_text, "created_at": created_at})
 
             results = None
             tweets_to_analyse = [tweet["content"] for tweet in tweets_analysed[total_count:total_count + batch_count]]
@@ -85,14 +85,6 @@ def sentiment_view():
 
         if total_count == 0:
             return render_template('welcome.html', message="Nie ma tweetów z takim hashtagiem!")
-
-        # avg_sentiment = None
-        # if max([positive, negative, neutral]) == positive:
-        #     avg_sentiment = 'positive'
-        # if max([positive, negative, neutral]) == negative:
-        #     avg_sentiment = 'negative'
-        # if max([positive, negative, neutral]) == neutral:
-        #     avg_sentiment = 'neutral'
 
         positive_percent = round(positive / total_count * 100, 2)
         negative_percent = round(negative / total_count * 100, 2)
