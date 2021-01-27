@@ -10,13 +10,13 @@
 </head>
 <body>
 <div class="stream">
-    <a href="{{ url_for('welcome') }}">
+    <a href="{{ url_for('sentiment_view') }}">
         <div class="stream-box">
             <h1>Analiza sentymentu tweetów</h1>
         </div>
     </a>
     <div class="stream-box">
-        <form action="{{ url_for('registration_view_post') }}" method="post">
+        <form action="{{ url_for('sentiment_view') }}" method="post">
             <ul class="form-ul">
                 <li>
                     <label for="hashtag" id="hashtag">tag do analizy #</label>
