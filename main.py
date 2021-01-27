@@ -2,11 +2,22 @@ from flask import Flask, render_template, make_response, request, jsonify
 from datetime import datetime
 import tweepy
 import config
+import re
 
 app = Flask(__name__)
 storage = None
 twitter_api, analytics_api = config.connect_with_services()
 
+RESULT_TRANSLATION = {
+    'positive': 'pozytywny',
+    'negative': 'negatywny',
+    'neutral': 'neutralny'
+}
+
+def clean_txt(tweet):
+    result = re.sub(r'[#@]', '', tweet)
+    result = re.sub(r'https?:\/\/\S+', '', result)
+    return result
 
 @app.route('/', methods=['GET', 'POST'])
 def sentiment_view():
@@ -17,7 +28,7 @@ def sentiment_view():
     if request.method == 'POST':
         data = {}
         data['hashtag'] = '#' + request.form.get("hashtag")
-        data['from'] = request.form.get("from")
+        data['until'] = request.form.get("until")
 
         errors = {}
         for k, v in data.items():
@@ -28,63 +39,56 @@ def sentiment_view():
             return jsonify(errors=errors), 400
 
         total_count = 0
-        last_id = 0
-        batch_count = 1
         tweets_analysed = []
         # Azure pozwala na wysyłanie maksymalnie 10 dokumentów naraz
         batch_size = 10
         positive = 0
         negative = 0
         neutral = 0
-        while batch_count > 0 and total_count < 300:
-            if total_count == 0:
-                tweets = tweepy.Cursor(
-                    twitter_api.search,
-                    tweet_mode='extended',
-                    q=data['hashtag'] + ' -filter:retweets',
-                    result_type='recent',
-                    lang="pl",
-                    since=data['from']).items(batch_size)
-            else:
-                tweets = tweepy.Cursor(
-                    twitter_api.search,
-                    tweet_mode='extended',
-                    q=data['hashtag'] + ' -filter:retweets',
-                    result_type='recent',
-                    lang="pl",
-                    max_id=last_id - 1,
-                    since=data['from']).items(batch_size)
 
-            batch_count = 0
-            for tweet in tweets:
-                batch_count += 1
-                created_at = str(tweet.created_at).split(' ')[0]
-                last_id = tweet.id
-                tweets_analysed.append({"id": tweet.id_str, "author": tweet.author.screen_name, "content": tweet.full_text, "created_at": created_at})
+        # API Twittera pozwala standardowym użytkownikom pobrać maks 300 twittów przed timeoutem
+        tweets = tweepy.Cursor(
+            twitter_api.search,
+            tweet_mode='extended',
+            q=data['hashtag'] + ' -filter:retweets',
+            result_type='mixed',
+            until=data['until'],
+            lang="pl").items(300)
 
-            results = None
-            tweets_to_analyse = [tweet["content"] for tweet in tweets_analysed[total_count:total_count + batch_count]]
-            if tweets_to_analyse:
-                results = analytics_api.analyze_sentiment(tweets_to_analyse)
-
-            i = 0
-            for tweet in tweets_analysed[total_count:total_count + batch_count]:
-                sentiment = results[i]['sentiment']
-                if sentiment == 'positive':
-                    positive += 1
-                if sentiment == 'negative':
-                    negative += 1
-                if sentiment == 'neutral':
-                    neutral += 1
-
-                tweet['sentiment'] = sentiment
-
-                i += 1
-
-            total_count += batch_count
+        for tweet in tweets:
+            total_count += 1
+            created_at = str(tweet.created_at).split(' ')[0]
+            last_id = tweet.id
+            tweets_analysed.append({"id": tweet.id_str, "author": tweet.author.screen_name, "content": tweet.full_text, "created_at": created_at})
 
         if total_count == 0:
-            return render_template('welcome.html', message="Nie ma tweetów z takim hashtagiem!")
+            return render_template('welcome.html', message="Nie znaleziono tweetów spełniających podane wymagania.")
+
+        for i in range(0, total_count, 10):
+            j = i + batch_size
+            if j > total_count:
+                j = total_count
+            
+            tweets_to_analyse = [clean_txt(tweet["content"]) for tweet in tweets_analysed[i : j]]
+            results = analytics_api.analyze_sentiment(tweets_to_analyse)
+
+            k = 0
+            for tweet in tweets_analysed[i : j]:
+                sentiment_scores = results[k]['confidence_scores']
+
+                if sentiment_scores.neutral > 0.9:
+                    neutral += 1
+                    sentiment = 'neutral'
+                elif sentiment_scores.positive > sentiment_scores.negative:
+                    positive += 1
+                    sentiment = 'positive'
+                else: 
+                    negative += 1
+                    sentiment = 'negative'
+                
+                tweet['sentiment'] = RESULT_TRANSLATION[sentiment]
+
+                k += 1
 
         positive_percent = round(positive / total_count * 100, 2)
         negative_percent = round(negative / total_count * 100, 2)
