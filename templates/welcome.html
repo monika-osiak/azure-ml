@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <title>Analiza sentymentu tweetów</title>
+</head>
+<body>
+<div class="stream">
+    <a href="{{ url_for('sentiment_view') }}">
+        <div class="stream-box">
+            <h1>Analiza sentymentu tweetów</h1>
+        </div>
+    </a>
+    <div class="stream-box">
+        <form action="{{ url_for('sentiment_view') }}" method="post">
+            <ul class="form-ul">
+                <li>
+                    <label for="hashtag" id="hashtag">tag do analizy #</label>
+                    <input type="text" name="hashtag" id="hashtag" required>
+                </li>
+                <li>
+                    <label for="from">od daty</label>
+                    <input type="date" name="from" id="from" required>
+                </li>
+                <li>
+                    <input type="submit" class="submit-button" value="Szukaj">
+                </li>
+            </ul>
+        </form>
+    </div>
+    {% if message %}
+        <div class="stream-box error-box">
+            {{ message }}
+        </div>
+    {% endif %}
+    
+    {% if tweets %}
+        <div class="stream-box">
+            <h3>
+                Przeanalizowano {{ total_count }} tweetów.
+            </h3>
+        </div>
+        <div class="stream-box">
+            <div class="chart-wrapper">
+                <canvas id="sentimentChart"></canvas>
+            </div>
+            <script>
+                var ctx = document.getElementById('sentimentChart');
+                var sentimentChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: ["{{ negative_percent }}", "{{ positive_percent }}", "{{ neutral_percent }}"],
+                            backgroundColor: [
+                                'rgba(245, 0, 19, 0.8)',
+                                'rgba(0, 245, 19, 0.8)',
+                                'rgba(128, 128, 128, 0.8)'
+                            ]
+                        }],
+                        labels: [
+                            'Negative',
+                            'Positive',
+                            'Neutral'
+                        ]
+                    },
+                    options: {
+                        legend: {
+                            position: "bottom",
+                            align: "center",
+                            labels: {
+                                padding: 30,
+                                fontSize: 20,
+                                boxWidth: 50,
+                            }
+                        }
+                    }
+                });
+            </script>
+        </div>
+        <div class="stream-box">
+            <h3>
+                Oto przykładowe z nich:
+            </h3>
+        </div>
+    {% endif %}
+    {% for tweet in tweets %}
+        <div class="stream-box">
+            <div class="stream-box-date">
+                Opublikowano: {{ tweet.created_at }}
+            </div>
+            <div class="stream-box-link">
+                <a href="{{ 'https://twitter.com/' + tweet.author + '/status/' + tweet.id }}">{{ 'https://twitter.com/' + tweet.author + '/status/' + tweet.id }}</a>
+            </div>
+            <div class="stream-box-content">
+                {{ tweet.content }}
+            </div>
+            <div class="stream-box-sentiment">
+                Ocena: {{ tweet.sentiment }}
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+</body>
+</html>
